@@ -3,7 +3,7 @@
 // Free To Use Comfort and Peace
 //==================================================
 
-using FluentAssertions.Common;
+using Sheenam.Api.Brokers.Storages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IstorageBroker, StorageBroker>();
 
 var app = builder.Build();
 
