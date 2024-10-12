@@ -1,4 +1,10 @@
-﻿namespace Sheenam.Api.Models.Foundations.Guests
+﻿//==================================================
+// Copyright (c) Coalition of Good-Hearted Engineers
+// Free To Use Comfort and Peace
+//==================================================
+
+using System;
+namespace Sheenam.Api.Models.Foundations.Guests
 {
     public class Guest
     {
