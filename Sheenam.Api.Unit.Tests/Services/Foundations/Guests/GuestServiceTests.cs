@@ -11,7 +11,7 @@ using Sheenam.Api.Services.Foundations.Guests;
 
 namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
 {
-    public class GuestServiceTests
+    public partial class GuestServiceTests
     {
         private readonly Mock<IstorageBroker> storageBrokerMock;
         private readonly IGuestService guestService;
