@@ -12,10 +12,13 @@ namespace Sheenam.Api.Brokers.Storages
     public partial class StorageBroker: EFxceptionsContext, IstorageBroker
     {
         private readonly IConfiguration configuration;
-        public StorageBroker(IConfiguration configuration)
+        private readonly ILogger<StorageBroker> logger;
+
+        public StorageBroker(IConfiguration configuration, ILogger<StorageBroker> logger)
         {
             this.configuration = configuration;
             this.Database.Migrate();
+            this.logger = logger;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
