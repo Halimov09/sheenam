@@ -38,11 +38,20 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
         }
 
         private Guest CreateRandomGuest()
         {
-            throw new NotImplementedException();
+            return new Guest
+            {
+                Id = Guid.NewGuid(),            
+                FirstName = "John",            
+                LastName = "Doe",              
+                DateOfBirth = DateTime.UtcNow,    
+                Email = "john.doe@example.com", 
+                Address = "1234 Random St",     
+            };
         }
     }
 }

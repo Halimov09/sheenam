@@ -15,7 +15,7 @@ namespace Sheenam.Api.Brokers.Storages
 
         public async ValueTask<Guest> InsertGuestAsync(Guest guest)
         {
-            using var broker = new StorageBroker(this.configuration);
+            using var broker = new StorageBroker(this.configuration, this.logger);
 
             EntityEntry<Guest> guestEntityEntriy = 
                 await broker.Guests.AddAsync(guest);

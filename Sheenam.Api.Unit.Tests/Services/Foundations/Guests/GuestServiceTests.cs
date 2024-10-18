@@ -5,6 +5,7 @@
 
 using FluentAssertions;
 using Moq;
+using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Services.Foundations.Guests;
@@ -14,14 +15,17 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
     public partial class GuestServiceTests
     {
         private readonly Mock<IstorageBroker> storageBrokerMock;
+        private readonly Mock<IloggingBroker> loggingBrokerMock;
         private readonly IGuestService guestService;
 
         public GuestServiceTests()
         {
             this.storageBrokerMock = new Mock<IstorageBroker>();
+            this.loggingBrokerMock = new Mock<IloggingBroker>();
 
-            this.guestService =
-                new GuestService(storageBroker:this.storageBrokerMock.Object);
+            this.guestService = new GuestService(
+                storageBroker: this.storageBrokerMock.Object,
+                loggingBroker: this.loggingBrokerMock.Object);
         }
 
         [Fact]
@@ -40,7 +44,7 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 Gender = GenderType.Male,
             };
 
-            this.storageBrokerMock.Setup(broker => 
+            this.storageBrokerMock.Setup(broker =>
             broker.InsertGuestAsync(randomGuest))
                 .ReturnsAsync(randomGuest);
 
