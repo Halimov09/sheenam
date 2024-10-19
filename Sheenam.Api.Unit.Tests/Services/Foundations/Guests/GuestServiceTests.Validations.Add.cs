@@ -31,15 +31,9 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             await Assert.ThrowsAsync<GuestValidationException>(() =>
             addGuestTask.AsTask());
 
-            //its code not long timely code its need put down to rubbish
             this.loggingBrokerMock.Verify(broker =>
-            broker.LogError(It.Is<Xeption>(exception =>
-            exception is NullGuestException)), Times.Once);
-
-            // its code must-have change to correct code
-            //this.loggingBrokerMock.Verify(broker =>
-            //broker.LogError(It.Is(SameExceptionAs(expectedGuestValidationException))),
-            //Times.Once);
+            broker.LogError(It.Is(SameExceptionAs(expectedGuestValidationException))),
+            Times.Once);
 
             this.storageBrokerMock.Verify(broker => 
             broker.InsertGuestAsync(It.IsAny<Guest>()),
