@@ -25,11 +25,22 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
         public async ValueTask<Guest> AddGuestAsync(Guest guest)
         {
-            if (guest is null)
+            try
             {
-                throw new GuestValidationException(new NullGuestException());
+                if (guest is null)
+                {
+                    throw new NullGuestException();
+                }
+                return await this.storageBroker.InsertGuestAsync(guest);
             }
-            return await this.storageBroker.InsertGuestAsync(guest);
+            catch (NullGuestException nullGuestException)
+            {
+                this.loggingBroker.LogError(nullGuestException);
+                var guestValidationException =
+                    new GuestValidationException(nullGuestException);
+                throw guestValidationException;
+            }
+
         }
     }
 }
