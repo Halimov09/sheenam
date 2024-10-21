@@ -83,19 +83,22 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             ValueTask<Guest> addGuestTask = 
                 this.guestService.AddGuestAsync(invalidGuest);
 
-            //then
+
+            // then
             await Assert.ThrowsAsync<GuestValidationException>(() =>
-            addGuestTask.AsTask());
+                addGuestTask.AsTask());
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogError(It.Is(SameExceptionAs
-                (ExpectedGuestValidationException))),Times.Once);
+                broker.LogError(It.Is<GuestValidationException>(actualException =>
+                    actualException.Message == ExpectedGuestValidationException.Message)),
+                Times.Once);
 
-            this.storageBrokerMock.Verify(broker => 
-            broker.InsertGuestAsync(It.IsAny<Guest>()), Times.Once);
+            this.storageBrokerMock.Verify(broker =>
+                broker.InsertGuestAsync(It.IsAny<Guest>()), Times.Never);
 
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
+
         }
     }
 }

@@ -20,8 +20,12 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 return await returningGuestFunction();
             }
             catch (NullGuestException nullGuestException)
-            {   
+            {
                 throw CreateGuestValidationException(nullGuestException);
+            }
+            catch (InvalidGuestException invalidGuestException)
+            {
+                throw CreateGuestValidationException(invalidGuestException);
             }
         }
 
