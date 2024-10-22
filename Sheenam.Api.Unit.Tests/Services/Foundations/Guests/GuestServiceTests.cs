@@ -39,6 +39,21 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
 
+        private static int GetRandomNumber() =>
+            new IntRange(min: 2, max: 9).GetValue();
+
+        private static T GetTInvalidEnum<T> ()
+        {
+            int randumNumber = GetRandomNumber();
+
+            while (Enum.IsDefined(typeof(T), randumNumber) is true)
+            {
+                randumNumber = GetRandomNumber();
+            }
+
+            return (T)(object)randumNumber;
+        }
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException)
         {
             return actualException => 
