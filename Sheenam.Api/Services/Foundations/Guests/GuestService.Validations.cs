@@ -5,6 +5,7 @@
 
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Services.Foundations.Guests.Exceptions;
+using System.Data;
 using YamlDotNet.Core.Tokens;
 
 namespace Sheenam.Api.Services.Foundations.Guests
@@ -21,7 +22,8 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 (Rule: IsInvalid(guest.LastName), Parameter: nameof(guest.LastName)),
                 (Rule: IsInvalid(guest.DateOfBirth), Parameter: nameof(guest.DateOfBirth)),
                 (Rule: IsInvalid(guest.Email), Parameter: nameof(guest.Email)),
-                (Rule: IsInvalid(guest.Address), Parameter: nameof(guest.Address)));
+                (Rule: IsInvalid(guest.Address), Parameter: nameof(guest.Address)),
+                (Rule: IsInvalid(guest.Gender), Parametr: nameof(guest.Gender)));
         }
 
         private void ValidateGuestNotNull(Guest guest)
@@ -48,6 +50,12 @@ namespace Sheenam.Api.Services.Foundations.Guests
         {
             Condition = date == default,
             Message = "Date is Require"
+        };
+
+        private static dynamic IsInvalid(GenderType gender) => new
+        {
+            Condition = Enum.IsDefined( gender) is false,
+            Message = "value is invalid"
         };
 
         private static void Validate( params (dynamic Rule, string Parametr)[] validations)

@@ -101,8 +101,8 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
 
         }
 
-        [Fact]  
-        public async Task ShouldThrowwValidationExceptionOnAddIfGenderIsInvalidAndLogitAsync ()
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnAddIfGenderIsInvalidAndLogItAsync()
         {
             //given
             Guest randomGuest = CreateRandomGuest();
@@ -112,21 +112,21 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
 
             invalidGuestException.AddData(
                 key: nameof(Guest.Gender),
-                values: "values is invalid");
+                values: "value is invalid");
 
-            var expectedGuestValidatinException = 
+            var expectedGuestValidationException =
                 new GuestValidationException(invalidGuestException);
 
             //when
-            ValueTask<Guest> addGuestTask = 
+            ValueTask<Guest> addGuestTask =
                 this.guestService.AddGuestAsync(invalidGuest);
 
             //then
-            await Assert.ThrowsAsync<GuestValidationException>(() => 
+            await Assert.ThrowsAsync<GuestValidationException>(() =>
                 addGuestTask.AsTask());
 
-            this.loggingBrokerMock.Verify(broker => 
-                broker.LogError(It.Is(SameExceptionAs(expectedGuestValidatinException))),
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(expectedGuestValidationException))),
                 Times.Once);
 
             this.storageBrokerMock.Verify(broker =>
@@ -136,5 +136,6 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             this.loggingBrokerMock.VerifyNoOtherCalls();
             this.storageBrokerMock.VerifyNoOtherCalls();
         }
+
     }
 }
