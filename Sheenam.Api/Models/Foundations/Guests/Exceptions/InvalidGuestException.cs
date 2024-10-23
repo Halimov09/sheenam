@@ -6,12 +6,12 @@
 
 using Xeptions;
 
-namespace Sheenam.Api.Services.Foundations.Guests.Exceptions
+namespace Sheenam.Api.Models.Foundations.Guests.Exceptions
 {
     public class InvalidGuestException : Xeption
     {
-        public InvalidGuestException() 
-            :base(message: "Guest is Invalid")
+        public InvalidGuestException()
+            : base(message: "Guest is Invalid")
         { }
     }
 }

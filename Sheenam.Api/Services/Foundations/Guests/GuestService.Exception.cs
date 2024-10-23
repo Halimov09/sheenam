@@ -4,7 +4,7 @@
 //==================================================
 
 using Sheenam.Api.Models.Foundations.Guests;
-using Sheenam.Api.Services.Foundations.Guests.Exceptions;
+using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Xeptions;
 
 namespace Sheenam.Api.Services.Foundations.Guests
