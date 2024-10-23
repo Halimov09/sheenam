@@ -4,13 +4,11 @@
 //==================================================
 
 using Sheenam.Api.Models.Foundations.Guests;
-using Sheenam.Api.Services.Foundations.Guests.Exceptions;
-using System.Data;
-using YamlDotNet.Core.Tokens;
+using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
 namespace Sheenam.Api.Services.Foundations.Guests
 {
-    public partial class GuestService 
+    public partial class GuestService
     {
         private void ValidateGuestOnAdd(Guest guest)
         {
@@ -54,11 +52,11 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
         private static dynamic IsInvalid(GenderType gender) => new
         {
-            Condition = Enum.IsDefined( gender) is false,
+            Condition = Enum.IsDefined(gender) is false,
             Message = "value is invalid"
         };
 
-        private static void Validate( params (dynamic Rule, string Parametr)[] validations)
+        private static void Validate(params (dynamic Rule, string Parametr)[] validations)
         {
             var invalidGuestException = new InvalidGuestException();
 
