@@ -97,7 +97,8 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             Guest someGuest = CreateRandomGuest();
             var serviceException = new Exception();
 
-            var failedGuestServiceException = new FailedGuestServiceException(serviceException);
+            var failedGuestServiceException = 
+                new FailedGuestServiceException(serviceException);
 
             var expectedGuestServiceException = 
                 new GuestServiceException(failedGuestServiceException);
