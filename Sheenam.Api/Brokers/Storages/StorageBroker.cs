@@ -5,11 +5,10 @@
 
 using EFxceptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Sheenam.Api.Brokers.Storages
 {
-    public partial class StorageBroker: EFxceptionsContext, IstorageBroker
+    public partial class StorageBroker : EFxceptionsContext, IstorageBroker
     {
         private readonly IConfiguration configuration;
         private readonly ILogger<StorageBroker> logger;
@@ -23,12 +22,12 @@ namespace Sheenam.Api.Brokers.Storages
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = 
+            string connectionString =
                 this.configuration.GetConnectionString(name: "DefaultConnection");
 
             optionsBuilder.UseSqlServer(connectionString);
         }
 
-        public override void Dispose() {}
+        public override void Dispose() { }
     }
 }
