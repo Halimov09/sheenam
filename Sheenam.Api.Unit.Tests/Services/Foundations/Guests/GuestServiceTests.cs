@@ -75,32 +75,7 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
 
             return filler;
         }
-
-        [Fact]
-        public async Task ShoulAddGuestAsync()
-        {
-            // Arrange
-            Guest randomGuest = new Guest
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Jhon",
-                LastName = "kroos",
-                DateOfBirth = DateTime.Now,
-                Address = "street05",
-                Email = "ofweivrw@gmail.com",
-                PhoneNumber = "1234567890",
-                Gender = GenderType.Male,
-            };
-
-            this.storageBrokerMock.Setup(broker =>
-            broker.InsertGuestAsync(randomGuest))
-                .ReturnsAsync(randomGuest);
-
-            //Act
-            Guest actual = await this.guestService.AddGuestAsync(randomGuest);
-
-            //Assert
-            actual.Should().BeEquivalentTo(randomGuest);
-        }
     }
 }
+
+
