@@ -5,6 +5,7 @@
 
 using EFxceptions;
 using Microsoft.EntityFrameworkCore;
+using Sheenam.Api.Models.Foundations.Guests;
 
 namespace Sheenam.Api.Brokers.Storages
 {
@@ -29,5 +30,10 @@ namespace Sheenam.Api.Brokers.Storages
         }
 
         public override void Dispose() { }
+
+        public ValueTask<Guest> DeleteGuestAsync(Guest guest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

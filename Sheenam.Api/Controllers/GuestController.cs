@@ -53,5 +53,23 @@ namespace Sheenam.Api.Controllers
                 return InternalServerError(guestServiceException.InnerException);
             }
         }
+
+        [HttpDelete("{guestId}")]
+        public async ValueTask<ActionResult<Guest>> DeleteGuestAsync(Guid guestId)
+        {
+            try
+            {
+                Guest deletedGuest = await this.guestService.RemoveGuestByIdAsync(guestId);
+                return Ok(deletedGuest);
+            }
+            catch (GuestNotFoundException guestNotFoundException)
+            {
+                return NotFound(guestNotFoundException.Message);
+            }
+            catch (Exception exception)
+            {
+                return InternalServerError(exception);
+            }
+        }
     }
 }
