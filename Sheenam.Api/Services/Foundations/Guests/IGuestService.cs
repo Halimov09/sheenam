@@ -10,5 +10,8 @@ namespace Sheenam.Api.Services.Foundations.Guests
     public interface IGuestService
     {
         ValueTask<Guest> AddGuestAsync(Guest guest);
+        ValueTask<Guest> RemoveGuestByIdAsync(Guid guestId);
+        ValueTask<Guest> DeleteGuestAsync(Guid guestId);
+
     }
 }

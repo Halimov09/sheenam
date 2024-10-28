@@ -24,5 +24,24 @@ namespace Sheenam.Api.Brokers.Storages
 
             return guestEntityEntriy.Entity;
         }
+
+        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
+        {
+            return await this.Guests.FindAsync(guestId);
+        }
+
+        public async ValueTask<Guest> DeleteGuestAsync(Guid guestId)
+        {
+            Guest guest = await this.SelectGuestByIdAsync(guestId);
+
+            if (guest != null)
+            {
+                this.Guests.Remove(guest);
+                await this.SaveChangesAsync();
+            }
+
+            return guest;
+        }
+
     }
 }
