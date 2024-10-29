@@ -49,5 +49,25 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
             return await this.storageBroker.DeleteGuestAsync(guestId);
         }
+
+        public async ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId)
+        {
+            IsInvalid(guestId); 
+
+            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId); 
+
+            if (guest is null)
+            {
+                throw new GuestNotFoundException(guestId); 
+            }
+
+            return guest; 
+        }
+
+        public async ValueTask<IEnumerable<Guest>> RetrieveAllGuestsAsync()
+        {
+            return await this.storageBroker.SelectAllGuestsAsync();
+        }
+
     }
 }

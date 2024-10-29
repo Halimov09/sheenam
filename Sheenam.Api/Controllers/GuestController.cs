@@ -71,5 +71,41 @@ namespace Sheenam.Api.Controllers
                 return InternalServerError(exception);
             }
         }
+
+        [HttpGet("{guestId}")]
+        public async Task<ActionResult<Guest>> GetGuestByIdAsync(Guid guestId)
+        {
+            try
+            {
+                Guest guest = await this.guestService.RetrieveGuestByIdAsync(guestId);
+
+                if (guest is null)
+                {
+                    return NotFound(); // Agar mehmon topilmasa
+                }
+
+                return Ok(guest); // Agar mehmon topilsa
+            }
+            catch (GuestNotFoundException guestNotFoundException)
+            {
+                return NotFound(guestNotFoundException.Message);
+            }
+        }
+
+        [HttpGet]
+        public async ValueTask<ActionResult<IEnumerable<Guest>>> GetAllGuestsAsync()
+        {
+            try
+            {
+                IEnumerable<Guest> guests = await this.guestService.RetrieveAllGuestsAsync();
+                return Ok(guests);
+            }
+            catch (Exception exception)
+            {
+                return InternalServerError(exception);
+            }
+        }
+
+
     }
 }
