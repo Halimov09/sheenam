@@ -41,7 +41,6 @@ namespace Sheenam.Api.Brokers.Storages
 
         public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
         {
-            // Mehmonni ma'lumotlar bazasidan olish
             return await this.Guests.FindAsync(guestId);
         }
 
@@ -49,6 +48,14 @@ namespace Sheenam.Api.Brokers.Storages
         {
             return await this.Guests.ToListAsync();
         }
+
+        public async ValueTask<Guest> UpdateGuestAsync(Guest guest)
+        {
+            this.Guests.Update(guest);
+            await this.SaveChangesAsync();
+            return guest;
+        }
+
 
     }
 }

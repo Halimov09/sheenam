@@ -69,5 +69,24 @@ namespace Sheenam.Api.Services.Foundations.Guests
             return await this.storageBroker.SelectAllGuestsAsync();
         }
 
+        public async ValueTask<Guest> UpdateGuestAsync(Guid guestId, Guest guest)
+        {
+            Guest existingGuest = await this.storageBroker.SelectGuestByIdAsync(guestId);
+            if (existingGuest == null)
+            {
+                throw new GuestNotFoundException(guestId);
+            }
+
+            existingGuest.FirstName = guest.FirstName; 
+            existingGuest.LastName = guest.LastName; 
+            existingGuest.PhoneNumber = guest.PhoneNumber;
+            existingGuest.DateOfBirth = guest.DateOfBirth;
+            existingGuest.Address = guest.Address;
+            existingGuest.Email = guest.Email;
+            existingGuest.Gender = guest.Gender;
+
+            return await this.storageBroker.UpdateGuestAsync(existingGuest);
+        }
+
     }
 }

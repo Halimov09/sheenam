@@ -106,6 +106,27 @@ namespace Sheenam.Api.Controllers
             }
         }
 
+        [HttpPut("{guestId}")]
+        public async ValueTask<ActionResult<Guest>> UpdateGuestAsync(Guid guestId, Guest guest)
+        {
+            try
+            {
+                Guest updatedGuest = await this.guestService.UpdateGuestAsync(guestId, guest);
+                return Ok(updatedGuest);
+            }
+            catch (GuestNotFoundException guestNotFoundException)
+            {
+                return NotFound(guestNotFoundException.Message);
+            }
+            catch (GuestValidationException guestValidationException)
+            {
+                return BadRequest(guestValidationException.InnerException);
+            }
+            catch (Exception exception)
+            {
+                return InternalServerError(exception);
+            }
+        }
 
     }
 }
