@@ -31,10 +31,26 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 throw new System.Exception("Fake Exception");
             });
 
-        public ValueTask<Guest> DeleteGuestAsync(Guid guestId)
+        public async ValueTask<Guest> DeleteGuestAsync(Guid guestId)
         {
-            throw new NotImplementedException();
+            var guestToDelete = await this.SelectGuestByIdAsync(guestId); 
+
+            if (guestToDelete == null)
+            {
+                throw new GuestNotFoundException(guestId); 
+            }
+           
+            return guestToDelete;
         }
+
+        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
+        {
+            IsInvalid(guestId); 
+
+            return await this.storageBroker.SelectGuestByIdAsync(guestId); 
+        }
+
+
 
         public async ValueTask<Guest> RemoveGuestByIdAsync(Guid guestId)
         {
@@ -49,6 +65,21 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
             return await this.storageBroker.DeleteGuestAsync(guestId);
         }
+
+        public async ValueTask<Guest> GetGuestByIdAsync(Guid guestId)
+        {
+            IsInvalid(guestId);
+
+            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
+
+            if (guest is null)
+            {
+                throw new GuestNotFoundException(guestId);
+            }
+
+            return guest;
+        }
+
 
         public async ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId)
         {
