@@ -81,10 +81,10 @@ namespace Sheenam.Api.Controllers
 
                 if (guest is null)
                 {
-                    return NotFound(); // Agar mehmon topilmasa
+                    return NotFound();
                 }
 
-                return Ok(guest); // Agar mehmon topilsa
+                return Ok(guest); 
             }
             catch (GuestNotFoundException guestNotFoundException)
             {
