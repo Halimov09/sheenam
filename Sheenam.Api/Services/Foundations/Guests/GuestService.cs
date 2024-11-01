@@ -33,38 +33,36 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
         public async ValueTask<Guest> DeleteGuestAsync(Guid guestId)
         {
-            var guestToDelete = await this.SelectGuestByIdAsync(guestId); 
+            var guestToDelete = await this.SelectGuestByIdAsync(guestId);
 
             if (guestToDelete == null)
             {
-                throw new GuestNotFoundException(guestId); 
+                throw new NotFoundGuestException(guestId);
             }
-           
+
             return guestToDelete;
         }
 
         public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
         {
-            IsInvalid(guestId); 
-
-            return await this.storageBroker.SelectGuestByIdAsync(guestId); 
-        }
-
-
-
-        public async ValueTask<Guest> RemoveGuestByIdAsync(Guid guestId)
-        {
             IsInvalid(guestId);
 
-            Guest guestToRemove = await this.storageBroker.SelectGuestByIdAsync(guestId);
-
-            if (guestToRemove == null)
-            {
-                throw new GuestNotFoundException(guestId);
-            }
-
-            return await this.storageBroker.DeleteGuestAsync(guestId);
+            return await this.storageBroker.SelectGuestByIdAsync(guestId);
         }
+
+
+        public ValueTask<Guest> RemoveGuestByIdAsync(Guid guestId) =>
+            TryCatch(async () =>
+            {
+                ValidateCompanyId(guestId);
+
+                Guest maybeGuest =
+                    await this.storageBroker.SelectGuestByIdAsync(guestId);
+
+                ValidateStorageGuestExists(maybeGuest, guestId);
+
+                return await this.storageBroker.DeleteGuestAsync(maybeGuest);
+            });
 
         public async ValueTask<Guest> GetGuestByIdAsync(Guid guestId)
         {
@@ -83,41 +81,19 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
         public async ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId)
         {
-            IsInvalid(guestId); 
+            IsInvalid(guestId);
 
-            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId); 
+            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
 
             if (guest is null)
-            {
-                throw new GuestNotFoundException(guestId); 
-            }
-
-            return guest; 
-        }
-
-        public async ValueTask<IEnumerable<Guest>> RetrieveAllGuestsAsync()
-        {
-            return await this.storageBroker.SelectAllGuestsAsync();
-        }
-
-        public async ValueTask<Guest> UpdateGuestAsync(Guid guestId, Guest guest)
-        {
-            Guest existingGuest = await this.storageBroker.SelectGuestByIdAsync(guestId);
-            if (existingGuest == null)
             {
                 throw new GuestNotFoundException(guestId);
             }
 
-            existingGuest.FirstName = guest.FirstName; 
-            existingGuest.LastName = guest.LastName; 
-            existingGuest.PhoneNumber = guest.PhoneNumber;
-            existingGuest.DateOfBirth = guest.DateOfBirth;
-            existingGuest.Address = guest.Address;
-            existingGuest.Email = guest.Email;
-            existingGuest.Gender = guest.Gender;
-
-            return await this.storageBroker.UpdateGuestAsync(existingGuest);
+            return guest;
         }
+
+      
 
     }
 }

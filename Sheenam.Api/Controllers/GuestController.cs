@@ -54,77 +54,40 @@ namespace Sheenam.Api.Controllers
             }
         }
 
-        [HttpDelete("{guestId}")]
-        public async ValueTask<ActionResult<Guest>> DeleteGuestAsync(Guid guestId)
+        [HttpDelete]
+        public async ValueTask<ActionResult<Guest>> DeleteCompanyByIdAsync(Guid id)
         {
             try
             {
-                Guest deletedGuest = await this.guestService.RemoveGuestByIdAsync(guestId);
-                return Ok(deletedGuest);
-            }
-            catch (GuestNotFoundException guestNotFoundException)
-            {
-                return NotFound(guestNotFoundException.Message);
-            }
-            catch (Exception exception)
-            {
-                return InternalServerError(exception);
-            }
-        }
+                Guest deletedCompany = await this.guestService.RemoveGuestByIdAsync(id);
 
-        [HttpGet("{guestId}")]
-        public async Task<ActionResult<Guest>> GetGuestByIdAsync(Guid guestId)
-        {
-            try
-            {
-                Guest guest = await this.guestService.RetrieveGuestByIdAsync(guestId);
-
-                if (guest is null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(guest); 
+                return Ok(deletedCompany);
             }
-            catch (GuestNotFoundException guestNotFoundException)
+            catch (GuestValidationException guestValidationException)
+                when (guestValidationException.InnerException is GuestNotFoundException)
             {
-                return NotFound(guestNotFoundException.Message);
-            }
-        }
-
-        [HttpGet]
-        public async ValueTask<ActionResult<IEnumerable<Guest>>> GetAllGuestsAsync()
-        {
-            try
-            {
-                IEnumerable<Guest> guests = await this.guestService.RetrieveAllGuestsAsync();
-                return Ok(guests);
-            }
-            catch (Exception exception)
-            {
-                return InternalServerError(exception);
-            }
-        }
-
-        [HttpPut("{guestId}")]
-        public async ValueTask<ActionResult<Guest>> UpdateGuestAsync(Guid guestId, Guest guest)
-        {
-            try
-            {
-                Guest updatedGuest = await this.guestService.UpdateGuestAsync(guestId, guest);
-                return Ok(updatedGuest);
-            }
-            catch (GuestNotFoundException guestNotFoundException)
-            {
-                return NotFound(guestNotFoundException.Message);
+                return NotFound(guestValidationException.InnerException);
             }
             catch (GuestValidationException guestValidationException)
             {
                 return BadRequest(guestValidationException.InnerException);
             }
-            catch (Exception exception)
+            catch (GuestDependencyValidationException guestDependencyValidationException)
+                when (guestDependencyValidationException.InnerException is LockedGuestException)
             {
-                return InternalServerError(exception);
+                return Locked(guestDependencyValidationException.InnerException);
+            }
+            catch (GuestDependencyValidationException guestDependencyValidationException)
+            {
+                return BadRequest(guestDependencyValidationException.InnerException);
+            }
+            catch (GuestDependencyException guestDependencyException)
+            {
+                return InternalServerError(guestDependencyException.InnerException);
+            }
+            catch (GuestServiceException guestServiceException)
+            {
+                return InternalServerError(guestServiceException.InnerException);
             }
         }
 

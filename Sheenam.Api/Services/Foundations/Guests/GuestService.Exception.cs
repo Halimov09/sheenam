@@ -5,6 +5,7 @@
 
 using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Xeptions;
@@ -25,6 +26,13 @@ namespace Sheenam.Api.Services.Foundations.Guests
             {
                 throw CreateGuestValidationException(nullGuestException);
             }
+            catch (GuestNotFoundException guestNotFoundException)
+            {
+                var guestValidationException = new GuestValidationException(guestNotFoundException);
+
+                this.loggingBroker.LogError(guestValidationException); 
+                throw guestValidationException;
+            }
             catch (InvalidGuestException invalidGuestException)
             {
                 throw CreateGuestValidationException(invalidGuestException);
@@ -43,11 +51,13 @@ namespace Sheenam.Api.Services.Foundations.Guests
             }
             catch (Exception exeption)
             {
-
                 var failedGuestServiceException = new FailedGuestServiceException(exeption);
 
                 throw CreateAndLogGuestServiceException(failedGuestServiceException);
             }
+            
+
+
         }
 
         private GuestValidationException CreateGuestValidationException(Xeption exception)

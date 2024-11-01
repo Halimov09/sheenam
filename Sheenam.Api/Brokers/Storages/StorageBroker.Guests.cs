@@ -39,10 +39,12 @@ namespace Sheenam.Api.Brokers.Storages
             return guest;
         }
 
-        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
-        {
-            return await this.Guests.FindAsync(guestId);
-        }
+        public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId) =>
+           await SelectAsync<Guest>(guestId);
+
+        public async ValueTask<Guest> DelleteGuestAsync(Guest guest) =>
+            await DeleteAsync(guest);
+
 
         public async ValueTask<IEnumerable<Guest>> SelectAllGuestsAsync()
         {
