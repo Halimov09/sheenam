@@ -32,10 +32,22 @@ namespace Sheenam.Api.Services.Foundations.Guests
             }
         }
 
+        private void ValidateStorageGuestExists(Guest maybeGuest, Guid guestId)
+        {
+            if (maybeGuest is null)
+            {
+                throw new GuestNotFoundException(guestId);
+            }
+        }
+
+
+        private static void ValidateCompanyId(Guid guestId) =>
+            Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
+
         private static dynamic IsInvalid(Guid id) => new
         {
             Condition = id == Guid.Empty,
-            Message = "Id is require"
+            Message = "Id is required"
         };
 
         private static dynamic IsInvalid(string text) => new

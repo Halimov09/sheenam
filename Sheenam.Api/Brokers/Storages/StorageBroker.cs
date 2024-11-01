@@ -21,6 +21,11 @@ namespace Sheenam.Api.Brokers.Storages
             this.logger = logger;
         }
 
+        public StorageBroker(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string connectionString =
@@ -28,6 +33,23 @@ namespace Sheenam.Api.Brokers.Storages
 
             optionsBuilder.UseSqlServer(connectionString);
         }
+
+        public async ValueTask<T> SelectAsync<T>(params object[] objectIds) where T : class
+        {
+            var broker = new StorageBroker(this.configuration);
+
+            return await broker.FindAsync<T>(objectIds);
+        }
+
+        public async ValueTask<T> DeleteAsync<T>(T @object)
+        {
+            var broker = new StorageBroker(this.configuration);
+            broker.Entry(@object).State = EntityState.Deleted;
+            await broker.SaveChangesAsync();
+
+            return @object;
+        }
+
 
         public override void Dispose() { }
 
