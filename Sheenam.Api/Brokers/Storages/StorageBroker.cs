@@ -41,6 +41,13 @@ namespace Sheenam.Api.Brokers.Storages
             return await broker.FindAsync<T>(objectIds);
         }
 
+        public IQueryable<T> SelectAll<T>() where T : class
+        {
+            var broker = new StorageBroker(configuration);
+
+            return broker.Set<T>();
+        }
+
         public async ValueTask<T> DeleteAsync<T>(T @object)
         {
             var broker = new StorageBroker(this.configuration);
@@ -52,10 +59,5 @@ namespace Sheenam.Api.Brokers.Storages
 
 
         public override void Dispose() { }
-
-        public ValueTask<Guest> DeleteGuestAsync(Guest guest)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

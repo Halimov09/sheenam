@@ -3,11 +3,13 @@
 // Free To Use Comfort and Peace
 //==================================================
 
+using Microsoft.AspNetCore.OData;
 using Microsoft.AspNetCore.Mvc;
 using RESTFulSense.Controllers;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Sheenam.Api.Services.Foundations.Guests;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace Sheenam.Api.Controllers
 {
@@ -51,6 +53,26 @@ namespace Sheenam.Api.Controllers
             catch (GuestServiceException guestServiceException)
             {
                 return InternalServerError(guestServiceException.InnerException);
+            }
+        }
+
+        [HttpGet]
+        [EnableQuery]
+        public ActionResult<IQueryable<Guest>> GetAllGuests()
+        {
+            try
+            {
+                IQueryable<Guest> allCompanies = this.guestService.RetrieveAllGuests();
+
+                return Ok(allCompanies);
+            }
+            catch (GuestDependencyException locationDependencyException)
+            {
+                return InternalServerError(locationDependencyException.InnerException);
+            }
+            catch (GuestServiceException locationServiceException)
+            {
+                return InternalServerError(locationServiceException.InnerException);
             }
         }
 

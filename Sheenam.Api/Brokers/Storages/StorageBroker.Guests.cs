@@ -26,37 +26,15 @@ namespace Sheenam.Api.Brokers.Storages
             return guestEntityEntry.Entity;
         }
 
-        public async ValueTask<Guest> DeleteGuestAsync(Guid guestId)
-        {
-            Guest guest = await this.SelectGuestByIdAsync(guestId);
-
-            if (guest != null)
-            {
-                this.Guests.Remove(guest);
-                await this.SaveChangesAsync();
-            }
-
-            return guest;
-        }
+        public async ValueTask<Guest> DeleteGuestAsync(Guest guest) =>
+            await DeleteAsync(guest);
 
         public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId) =>
            await SelectAsync<Guest>(guestId);
 
-        public async ValueTask<Guest> DelleteGuestAsync(Guest guest) =>
-            await DeleteAsync(guest);
 
-
-        public async ValueTask<IEnumerable<Guest>> SelectAllGuestsAsync()
-        {
-            return await this.Guests.ToListAsync();
-        }
-
-        public async ValueTask<Guest> UpdateGuestAsync(Guest guest)
-        {
-            this.Guests.Update(guest);
-            await this.SaveChangesAsync();
-            return guest;
-        }
+        public IQueryable<Guest> SelectAllGuests() =>
+            SelectAll<Guest>();
 
 
     }

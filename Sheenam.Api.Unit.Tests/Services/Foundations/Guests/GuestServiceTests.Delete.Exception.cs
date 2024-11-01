@@ -1,13 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿//==================================================
+// Copyright (c) Coalition of Good-Hearted Engineers
+// Free To Use Comfort and Peace
+//==================================================
+
+using Microsoft.Data.SqlClient;
 using Moq;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Sheenam.Api.Models.Foundations.Guests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using FluentAssertions;
 
 namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
@@ -60,7 +59,7 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             Guid someCompanyId = Guid.NewGuid();
             var serviceException = new Exception();
 
-            var failedCompanyServiceException = 
+            var failedCompanyServiceException =
                 new FailedGuestServiceException(serviceException);
 
             var expectedCompanyServiceException =

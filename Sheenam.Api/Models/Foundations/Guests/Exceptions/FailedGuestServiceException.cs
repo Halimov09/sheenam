@@ -12,8 +12,6 @@ namespace Sheenam.Api.Models.Foundations.Guests.Exceptions
         public FailedGuestServiceException(Exception innerException)
             :base(message: "Failed guest service error occured, contact support",
                  innerException)
-        {
-            
-        }
+        {}
     }
 }
