@@ -15,6 +15,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
     public partial class GuestService
     {
         private delegate ValueTask<Guest> ReturningGuestFunction();
+        private delegate IQueryable<Guest> ReturningGuestsFunction();
 
         private async ValueTask<Guest> TryCatch(ReturningGuestFunction returningGuestFunction)
         {
@@ -58,6 +59,36 @@ namespace Sheenam.Api.Services.Foundations.Guests
             
 
 
+        }
+
+        private IQueryable<Guest> TryCatch(ReturningGuestsFunction
+            returningCompaniesFunction)
+        {
+            try
+            {
+                return returningCompaniesFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedGuestServiceException =
+                    new FailedGuestServiceException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedGuestServiceException);
+            }
+            catch (Exception exception)
+            {
+                var failedGuestServiceException = new FailedGuestServiceException(exception);
+
+                throw CreateAndLogGuestServiceException(failedGuestServiceException);
+            }
+        }
+
+        private GuestDependencyException CreateAndLogCriticalDependencyException(Xeption exception)
+        {
+            var guestDependencyException = new GuestDependencyException(exception);
+            this.loggingBroker.LogCritical(guestDependencyException);
+
+            return guestDependencyException;
         }
 
         private GuestValidationException CreateGuestValidationException(Xeption exception)

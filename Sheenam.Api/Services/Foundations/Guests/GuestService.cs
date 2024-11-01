@@ -31,17 +31,8 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 throw new System.Exception("Fake Exception");
             });
 
-        public async ValueTask<Guest> DeleteGuestAsync(Guid guestId)
-        {
-            var guestToDelete = await this.SelectGuestByIdAsync(guestId);
-
-            if (guestToDelete == null)
-            {
-                throw new NotFoundGuestException(guestId);
-            }
-
-            return guestToDelete;
-        }
+        public IQueryable<Guest> RetrieveAllGuests() =>
+           TryCatch(() => this.storageBroker.SelectAllGuests());
 
         public async ValueTask<Guest> SelectGuestByIdAsync(Guid guestId)
         {
