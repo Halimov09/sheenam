@@ -32,8 +32,12 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 loggingBroker: this.loggingBrokerMock.Object);
         }
 
+        private static int GetRandomNegativeNumber() =>
+            -1 * new IntRange(min: 9, max: 99).GetValue();
+
+
         private static Guest CreateRandomGuest() =>
-            CreateGuestFiller(date: GetRandomDateTimeOffset()).Create();
+            CreateGuestFiller(dates: GetRandomDateTimeOffset()).Create();
 
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
@@ -53,6 +57,19 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 .Create(count: GetRandomNumber()).AsQueryable();
         }
 
+        private static Guest CreateRandomGuest(DateTimeOffset dates) =>
+           CreateGuestFiller(dates).Create();
+
+        private static Filler<Guest> CreateGuestFiller(DateTimeOffset dates)
+        {
+            var filler = new Filler<Guest>();
+
+            filler.Setup()
+                .OnType<DateTimeOffset>().Use(dates);
+
+            return filler;
+        }
+
         private static T GetTInvalidEnum<T>()
         {
             int randumNumber = GetRandomNumber();
@@ -65,19 +82,12 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             return (T)(object)randumNumber;
         }
 
+        private static SqlException CreateSqlException() =>
+            (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
+
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
-        private static Filler<Guest> CreateGuestFiller(DateTimeOffset date)
-        {
-            var filler = new Filler<Guest>();
-
-            filler.Setup()
-                .OnType<DateTimeOffset>()
-                .Use(date);
-
-            return filler;
-        }
     }
 }
 

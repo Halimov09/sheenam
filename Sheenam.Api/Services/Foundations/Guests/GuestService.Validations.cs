@@ -24,6 +24,17 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 (Rule: IsInvalid(guest.Gender), Parametr: nameof(guest.Gender)));
         }
 
+        private void ValidateGuestOnModify(Guest guest)
+        {
+            ValidateGuestNotNull(guest);
+
+            Validate(
+                (Rule: IsInvalid(guest.Id), Parameter: nameof(guest.Id)),
+                (Rule: IsInvalid(guest.LastName), Parameter: nameof(guest.LastName)),
+                (Rule: IsInvalid(guest.DateOfBirth), Parameter: nameof(guest.DateOfBirth)));
+        }
+
+
         private void ValidateGuestNotNull(Guest guest)
         {
             if (guest is null)
@@ -39,6 +50,29 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 throw new GuestNotFoundException(guestId);
             }
         }
+
+
+        private void ValidateAgainstStorageOnModify(Guest inputGuest, Guest storageGuest)
+        {
+            ValidateStorageGuestExists(storageGuest, inputGuest.Id);
+
+            Validate(
+                (Rule: IsNotSame(
+                    firstDate: inputGuest.DateOfBirth,
+                    secondDate: storageGuest.DateOfBirth,
+                    secondDateName: nameof(Guest.DateOfBirth)),
+                    Parameter: nameof(Guest.DateOfBirth)));
+        }
+
+
+        private static dynamic IsNotSame(
+           DateTimeOffset firstDate,
+           DateTimeOffset secondDate,
+           string secondDateName) => new
+           {
+               Condition = firstDate != secondDate,
+               Message = $"Date is not same as {secondDateName}"
+           };
 
 
         private static void ValidateCompanyId(Guid guestId) =>
