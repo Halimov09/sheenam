@@ -76,6 +76,34 @@ namespace Sheenam.Api.Controllers
             }
         }
 
+        [HttpPut]
+        public async ValueTask<ActionResult<Guest>> PutCompanyAsync(Guest guest)
+        {
+            try
+            {
+                Guest modifiedCompany = await this.guestService.ModifyGuestAsync(guest);
+
+                return Ok(modifiedCompany);
+            }
+            catch (GuestValidationException guestValidationException)
+                  when (guestValidationException.InnerException is NotFoundGuestException)
+            {
+                return NotFound(guestValidationException.InnerException);
+            }
+            catch (GuestValidationException guestValidationException)
+            {
+                return BadRequest(guestValidationException.InnerException);
+            }
+            catch (GuestDependencyException guestDependencyException)
+            {
+                return InternalServerError(guestDependencyException.InnerException);
+            }
+            catch (GuestServiceException guestServiceException)
+            {
+                return InternalServerError(guestServiceException.InnerException);
+            }
+        }
+
         [HttpDelete]
         public async ValueTask<ActionResult<Guest>> DeleteCompanyByIdAsync(Guid id)
         {
