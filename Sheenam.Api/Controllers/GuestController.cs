@@ -56,6 +56,35 @@ namespace Sheenam.Api.Controllers
             }
         }
 
+        [HttpGet("{guestId}")]
+        public async Task<IActionResult> GetGuestByIdAsync(Guid guestId)
+        {
+            try
+            {
+                Guest guest = await this.guestService.GetGuestByIdAsync(guestId);
+
+                if (guest == null)
+                {
+                    return NotFound(); 
+                }
+
+                return Ok(guest); 
+            }
+            catch (GuestDependencyException guestDependencyException)
+            {
+                return StatusCode(500, guestDependencyException.Message);
+            }
+            catch (GuestServiceException guestServiceException)
+            {
+                return StatusCode(500, guestServiceException.Message);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, exception.Message);
+            }
+        }
+
+
         [HttpGet]
         [EnableQuery]
         public ActionResult<IQueryable<Guest>> GetAllGuests()

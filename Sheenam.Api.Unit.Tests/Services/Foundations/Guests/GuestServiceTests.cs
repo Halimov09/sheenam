@@ -88,6 +88,8 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
         private Expression<Func<Xeption, bool>> SameExceptionAs(Xeption expectedException) =>
             actualException => actualException.SameExceptionAs(expectedException);
 
+        private static SqlException GetSqlError() =>
+            (SqlException)FormatterServices.GetUninitializedObject(typeof(SqlException));
     }
 }
 

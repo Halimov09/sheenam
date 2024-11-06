@@ -56,7 +56,6 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
                 throw CreateAndLogGuestServiceException(failedGuestServiceException);
             }
-            
 
 
         }
