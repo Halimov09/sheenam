@@ -3,10 +3,12 @@
 // Free To Use Comfort and Peace
 //==================================================
 
+using Microsoft.Data.SqlClient;
 using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
+using Xeptions;
 
 namespace Sheenam.Api.Services.Foundations.Guests
 {
@@ -69,34 +71,55 @@ namespace Sheenam.Api.Services.Foundations.Guests
 
         public async ValueTask<Guest> GetGuestByIdAsync(Guid guestId)
         {
-            IsInvalid(guestId);
-
-            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
-
-            if (guest is null)
+            try
             {
-                throw new GuestNotFoundException(guestId);
+                IsInvalid(guestId);
+
+                Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
+
+                if (guest is null)
+                {
+                    throw new GuestNotFoundException(guestId);
+                }
+
+                return guest;
             }
+            catch (SqlException sqlException)
+            {
+                var failedGuestStorageException = new FailedStorageGuestException(sqlException);
 
-            return guest;
+                throw new GuestDependencyException(failedGuestStorageException);
+            }
         }
-
 
         public async ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId)
         {
             IsInvalid(guestId);
 
-            Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
-
-            if (guest is null)
+            try
             {
-                throw new GuestNotFoundException(guestId);
+                Guest guest = await this.storageBroker.SelectGuestByIdAsync(guestId);
+
+                if (guest is null)
+                {
+                    throw new GuestNotFoundException(guestId);
+                }
+
+                return guest;
             }
+            catch (SqlException sqlException)
+            {
+                var failedStorageGuestException =
+                    new FailedGuestServiceException("Failed guest storage error occurred, contact support.", sqlException);
 
-            return guest;
+                var guestDependencyException =
+                    new GuestDependencyException(failedStorageGuestException);
+
+                // Xatoni loglash
+                this.loggingBroker.LogCritical(guestDependencyException);
+
+                throw guestDependencyException;
+            }
         }
-
-      
-
     }
 }

@@ -18,36 +18,36 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
         {
             // given
             Guid someId = Guid.NewGuid();
-            SqlException sqlException = GetSqlError();
+            SqlException sqlException = GetSqlException();
 
-            var failedGuestStorageException =
+            var failedClientStorageException =
                 new FailedStorageGuestException(sqlException);
 
-            var expectedGuestDependencyException =
-                new GuestDependencyException(failedGuestStorageException);
+            var expectedClientDependencyException =
+                new GuestDependencyException(failedClientStorageException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectGuestByIdAsync(It.IsAny<Guid>()))
                     .ThrowsAsync(sqlException);
 
             // when 
-            ValueTask<Guest> retrieveGuestById =
-                this.guestService.GetGuestByIdAsync(someId);
+            ValueTask<Guest> retrieveClientById =
+                this.guestService.RetrieveGuestByIdAsync(someId);
 
-            GuestDependencyException actualGuestDependencyException =
+            GuestDependencyException actualClientDependencyException =
                 await Assert.ThrowsAsync<GuestDependencyException>(
-                    retrieveGuestById.AsTask);
+                    retrieveClientById.AsTask);
 
             // then
-            actualGuestDependencyException.Should()
-                .BeEquivalentTo(expectedGuestDependencyException);
+            actualClientDependencyException.Should()
+                .BeEquivalentTo(expectedClientDependencyException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectGuestByIdAsync(someId), Times.Once());
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogCritical(It.Is(SameExceptionAs(
-                    expectedGuestDependencyException))), Times.Once);
+                    expectedClientDependencyException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
@@ -60,33 +60,33 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
             Guid someId = Guid.NewGuid();
             Exception serverException = new Exception();
 
-            var failedGuestServiceException =
+            var failedClientServiceException =
                 new FailedGuestServiceException(serverException);
 
-            var expectedGuestServiceException =
-                new GuestServiceException(failedGuestServiceException);
+            var expectedClientServiceException =
+                new GuestServiceException(failedClientServiceException);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.SelectGuestByIdAsync(It.IsAny<Guid>()))
                     .ThrowsAsync(serverException);
 
             // when
-            ValueTask<Guest> retrieveGuestById =
-                this.guestService.GetGuestByIdAsync(someId);
+            ValueTask<Guest> retrieveClientById =
+                this.guestService.RetrieveGuestByIdAsync(someId);
 
-            GuestServiceException actualGuestServiceException =
+            GuestServiceException actualClientServiceException =
                 await Assert.ThrowsAsync<GuestServiceException>(
-                    retrieveGuestById.AsTask);
+                    retrieveClientById.AsTask);
 
             // then
-            actualGuestServiceException.Should().BeEquivalentTo(expectedGuestServiceException);
+            actualClientServiceException.Should().BeEquivalentTo(expectedClientServiceException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectGuestByIdAsync(someId), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
                 broker.LogError(It.Is(SameExceptionAs(
-                    expectedGuestServiceException))), Times.Once);
+                    expectedClientServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
