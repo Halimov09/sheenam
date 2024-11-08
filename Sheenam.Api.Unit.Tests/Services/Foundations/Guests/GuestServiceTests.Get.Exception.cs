@@ -33,7 +33,8 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 Assert.Throws<GuestDependencyException>(retrieveAllGuests);
 
             // then
-            actualCompanyDependencyException.Should().BeEquivalentTo(expectedCompanyDependencyException);
+            actualCompanyDependencyException.Should().
+                BeEquivalentTo(expectedCompanyDependencyException);
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectAllGuests(), Times.Once);
