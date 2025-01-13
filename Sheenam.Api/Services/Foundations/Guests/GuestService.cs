@@ -109,7 +109,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
             catch (SqlException sqlException)
             {
                 var failedStorageGuestException =
-                    new FailedGuestServiceException("Failed guest storage error occurred, contact support.", sqlException);
+                    new FailedGuestServiceException(sqlException);
 
                 var guestDependencyException =
                     new GuestDependencyException(failedStorageGuestException);
