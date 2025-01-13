@@ -109,16 +109,28 @@ namespace Sheenam.Api.Services.Foundations.Guests
             catch (SqlException sqlException)
             {
                 var failedStorageGuestException =
-                    new FailedGuestServiceException("Failed guest storage error occurred, contact support.", sqlException);
+                    new FailedGuestServiceException(sqlException);
 
                 var guestDependencyException =
                     new GuestDependencyException(failedStorageGuestException);
 
-                // Xatoni loglash
                 this.loggingBroker.LogCritical(guestDependencyException);
 
                 throw guestDependencyException;
             }
+            catch (Exception exception)
+            {
+                var failedGuestServiceException =
+                    new FailedGuestServiceException(exception);
+
+                var guestServiceException =
+                    new GuestServiceException(failedGuestServiceException);
+
+                this.loggingBroker.LogError(guestServiceException);
+
+                throw guestServiceException;
+            }
         }
+
     }
 }
