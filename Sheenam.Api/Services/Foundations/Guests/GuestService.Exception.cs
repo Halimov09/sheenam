@@ -118,6 +118,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
         private GuestServiceException CreateAndLogGuestServiceException(Xeption xeption)
         {
             var guestServiceException = new GuestServiceException(xeption);
+
             this.loggingBroker.LogError(guestServiceException);
 
             return guestServiceException;

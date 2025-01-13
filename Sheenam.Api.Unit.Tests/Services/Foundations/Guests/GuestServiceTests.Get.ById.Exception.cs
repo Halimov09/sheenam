@@ -3,11 +3,11 @@
 // Free To Use Comfort and Peace
 //==================================================
 
+using FluentAssertions;
 using Microsoft.Data.SqlClient;
 using Moq;
-using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Sheenam.Api.Models.Foundations.Guests;
-using FluentAssertions;
+using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
 namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
 {
@@ -66,25 +66,28 @@ namespace Sheenam.Api.Unit.Tests.Services.Foundations.Guests
                 new GuestServiceException(failedGuestServiceException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectGuestByIdAsync(someId))
+                broker.SelectGuestByIdAsync(It.IsAny<Guid>()))
                     .Throws(serviceException);
 
             // when
             ValueTask<Guest> retrieveGuestByIdTask =
                 this.guestService.RetrieveGuestByIdAsync(someId);
 
-            var actualGuestDependencyException =
+            GuestServiceException actualGuestServiceException =
                 await Assert.ThrowsAsync<GuestServiceException>(
                     retrieveGuestByIdTask.AsTask);
 
             // then
-            actualGuestDependencyException.Should().BeEquivalentTo(expectedGuestServiceException);
+            actualGuestServiceException.Should().BeEquivalentTo(expectedGuestServiceException);
+
+            actualGuestServiceException.InnerException
+                .Should().BeOfType<FailedGuestServiceException>();
 
             this.storageBrokerMock.Verify(broker =>
                 broker.SelectGuestByIdAsync(It.IsAny<Guid>()), Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
-                broker.LogCritical(It.Is(SameExceptionAs(
+                broker.LogError(It.Is(SameExceptionAs(
                     expectedGuestServiceException))), Times.Once);
 
             this.storageBrokerMock.VerifyNoOtherCalls();
