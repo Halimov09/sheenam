@@ -17,7 +17,7 @@ namespace Sheenam.Api.Brokers.Storages
         public StorageBroker(IConfiguration configuration, ILogger<StorageBroker> logger)
         {
             this.configuration = configuration;
-            this.Database.Migrate();
+            this.Database.EnsureCreated();
             this.logger = logger;
         }
 
@@ -28,10 +28,9 @@ namespace Sheenam.Api.Brokers.Storages
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString =
-                this.configuration.GetConnectionString(name: "DefaultConnection");
+            string connectionString = ("Data source = Sheenam.core.Db");
 
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlite(connectionString);
         }
 
         public async ValueTask<T> SelectAsync<T>(params object[] objectIds) where T : class
