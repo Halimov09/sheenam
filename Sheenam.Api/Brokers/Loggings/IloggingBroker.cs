@@ -11,6 +11,7 @@ namespace Sheenam.Api.Brokers.Loggings
     {
         void LogError (Exception exception);
         void LogCritical (Exception exception);
+        void Log(Exception exception);
 
     }
 }
